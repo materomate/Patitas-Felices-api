@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     stock: { type: Number, default: 0 },
     imageURL: { type: String, default: "https://placehold.co/600x400" },
+    imagesUrl: { type: [String], default: [] },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     discount: { type: Number, default: 0, min: 0, max: 100 },
   },

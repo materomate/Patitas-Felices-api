@@ -1,6 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const MODEL = "gemini-3.6-flash";
 
 const SYSTEM_PROMPT = `
 Eres el asistente virtual de PetShop Online, una tienda en línea especializada en
@@ -53,16 +54,20 @@ const sendMessage = async (req, res, next) => {
   try {
     const { message, history = [] } = req.body;
 
-    const response = await client.messages.create({
-      model: "claude-opus-4-8",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [...history, { role: "user", content: message }],
+    const contents = [...history, { role: "user", content: message }].map(
+      ({ role, content }) => ({
+        role: role === "assistant" ? "model" : "user",
+        parts: [{ text: content }],
+      })
+    );
+
+    const response = await client.models.generateContent({
+      model: MODEL,
+      contents,
+      config: { systemInstruction: SYSTEM_PROMPT },
     });
 
-    const textBlock = response.content.find((block) => block.type === "text");
-
-    res.status(200).json({ reply: textBlock ? textBlock.text : "" });
+    res.status(200).json({ reply: response.text ?? "" });
   } catch (error) {
     next(error);
   }

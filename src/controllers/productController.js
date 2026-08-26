@@ -194,14 +194,23 @@ const getProductById = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, stock, imageURL, category, discount } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      stock,
+      imageURL,
+      imagesUrl,
+      category,
+      discount,
+    } = req.body;
     const newProduct = await Product.create({
       name,
       description,
       price,
       stock,
       imageURL,
+      imagesUrl,
       category,
       discount,
     });
@@ -215,11 +224,19 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, description, price, stock, imageURL, category, discount } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      stock,
+      imageURL,
+      imagesUrl,
+      category,
+      discount,
+    } = req.body;
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { name, description, price, stock, imageURL, category, discount },
+      { name, description, price, stock, imageURL, imagesUrl, category, discount },
       { new: true },
     ).populate("category");
     if (!updatedProduct) {

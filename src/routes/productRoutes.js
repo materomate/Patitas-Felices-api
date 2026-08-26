@@ -24,19 +24,34 @@ const productIdValidation = [
 
 const createProductValidation = [
   body("name").notEmpty().withMessage("Name is required"),
+  body("description").notEmpty().withMessage("Description is required"),
   body("price")
     .notEmpty()
     .withMessage("Price is required")
     .isFloat({ min: 0 })
     .withMessage("Price must be a positive number"),
+  body("stock")
+    .notEmpty()
+    .withMessage("Stock is required")
+    .isInt({ min: 0 })
+    .withMessage("Stock must be a non-negative integer"),
   body("category")
-    .optional()
+    .notEmpty()
+    .withMessage("Category is required")
     .isMongoId()
     .withMessage("Category must be a valid MongoDB ObjectId"),
   body("discount")
     .optional()
     .isFloat({ min: 0, max: 100 })
     .withMessage("Discount must be a number between 0 and 100"),
+  body("imagesUrl")
+    .optional()
+    .isArray()
+    .withMessage("imagesUrl must be an array of URLs"),
+  body("imagesUrl.*")
+    .optional()
+    .isURL()
+    .withMessage("Each image in imagesUrl must be a valid URL"),
 ];
 
 const updateProductValidation = [
@@ -60,6 +75,14 @@ const updateProductValidation = [
     .optional()
     .isFloat({ min: 0, max: 100 })
     .withMessage("Discount must be a number between 0 and 100"),
+  body("imagesUrl")
+    .optional()
+    .isArray()
+    .withMessage("imagesUrl must be an array of URLs"),
+  body("imagesUrl.*")
+    .optional()
+    .isURL()
+    .withMessage("Each image in imagesUrl must be a valid URL"),
 ];
 
 router.get("/products/search", searchProducts);
